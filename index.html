@@ -42,10 +42,12 @@
   .scanrow{display:flex;gap:8px}
   .scanrow input{flex:1;font-family:var(--mono);font-size:17px;padding:11px 13px;border:1.5px solid var(--line);border-radius:8px;background:#fbfbf8;color:var(--ink)}
   .scanrow input:focus{outline:none;border-color:var(--green)}
+  .hint{font-size:11.5px;color:var(--ink2);margin-top:6px}
   .btn{cursor:pointer;font-family:inherit;font-size:14px;border-radius:8px;padding:10px 16px;border:1.5px solid var(--green);background:var(--green);color:#fff;font-weight:600}
   .btn.sub{background:var(--card);color:var(--green)}
   .btn.mini{padding:5px 12px;font-size:12.5px;border-radius:6px}
-  .btn.wide{width:100%;margin-top:8px}
+  .btn.wide{width:100%}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
 
   .state{margin-top:14px;padding:11px 14px;border-radius:8px;font-size:14px;background:var(--paper);border:1px dashed var(--line);color:var(--ink2)}
   .state.on{background:var(--green-bg);border:1px solid var(--green);color:var(--green);font-weight:600}
@@ -58,15 +60,17 @@
   .res ul{list-style:none;margin-top:4px}
   .res li{padding:2px 0;font-size:13.5px}
   .choice{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .choice button{flex:1;min-width:120px;padding:12px 8px;border-radius:8px;border:1.5px solid var(--green);background:#fff;color:var(--green);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;line-height:1.4}
+  .choice button{flex:1;min-width:130px;padding:11px 8px;border-radius:8px;border:1.5px solid var(--green);background:#fff;color:var(--green);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;line-height:1.4}
   .choice button span{display:block;font-size:11.5px;font-weight:400;opacity:.8;margin-top:2px}
 
   .card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#fdfdfa;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
   .card .nm{font-weight:600;font-size:14px}
   .card .cd{font-family:var(--mono);font-size:11.5px;color:var(--ink2)}
   .tag{font-size:11px;padding:1px 8px;border-radius:99px;background:var(--amber-bg);color:var(--amber)}
+  .tag.b{background:var(--blue-bg);color:var(--blue)}
   .bc{height:16px;width:50px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 5px,transparent 5px 8px);opacity:.75}
-  .list{max-height:250px;overflow-y:auto;padding-right:4px}
+  .nobc{height:16px;width:50px;border-radius:3px;border:1px dashed var(--line);font-size:8.5px;color:var(--ink2);text-align:center;line-height:15px}
+  .list{max-height:260px;overflow-y:auto;padding-right:4px}
 
   table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--card)}
   th{text-align:left;font-size:11.5px;letter-spacing:.05em;color:var(--ink2);border-bottom:1.5px solid var(--line);padding:8px 10px;font-weight:600;white-space:nowrap}
@@ -76,12 +80,12 @@
   .tbl .h{padding:12px 16px 10px;font-size:14px;font-weight:600;border-bottom:1px solid var(--line)}
   .pill{display:inline-block;font-size:11.5px;padding:2px 10px;border-radius:99px}
   .pill.z{background:var(--green-bg);color:var(--green)}
-  .pill.k{background:#eeeee8;color:var(--ink2)}
-  .pill.t{background:var(--red-bg);color:var(--red);font-weight:700}
+  .pill.w{background:var(--amber-bg);color:var(--amber)}
   .log{list-style:none;font-size:12.5px;color:var(--ink2);margin-top:10px}
   .log li{padding:4px 0;border-bottom:1px dashed #e6e6dc}
   .log li:first-child{color:var(--ink);font-weight:600}
-  .box{border:2px dashed var(--line);border-radius:10px;padding:22px;text-align:center;color:var(--ink2);font-size:13.5px;background:#fbfbf8;margin-bottom:12px}
+  .box{border:2px dashed var(--line);border-radius:10px;padding:16px;text-align:center;color:var(--ink2);font-size:13.5px;background:#fbfbf8;margin-bottom:12px}
+  .box .cnt{font-size:26px;font-weight:700;color:var(--green);display:block;margin:4px 0}
   footer{text-align:center;font-size:11.5px;color:var(--ink2);padding:0 20px 40px}
 </style>
 </head>
@@ -94,17 +98,17 @@
 
 <div class="switcher"><div class="wrap swrow">
   <div class="sw">
-    <h3>① 返却を、誰が受け付けるか</h3>
+    <h3>① 返却を、どう受け付けるか</h3>
     <div class="opts">
       <button id="m-yujin" class="on" onclick="setMode('yujin')"><b>職員が受け取る</b><span>カウンターで対応</span></button>
-      <button id="m-mujin" onclick="setMode('mujin')"><b>返却ボックス</b><span>利用者が自分で</span></button>
+      <button id="m-mujin" onclick="setMode('mujin')"><b>返却ボックス</b><span>あとで職員がまとめて読む</span></button>
     </div>
   </div>
   <div class="sw">
     <h3>② 同じ本が複数あるとき、どの1冊か特定するか</h3>
     <div class="opts">
       <button id="t-nashi" class="on" onclick="setTrace(false)"><b>特定しない</b><span>本に何も書かない</span></button>
-      <button id="t-ari" onclick="setTrace(true)"><b>特定する</b><span>背表紙に①②を書く</span></button>
+      <button id="t-ari" onclick="setTrace(true)"><b>特定する</b><span>背表紙に番号を書く</span></button>
     </div>
   </div>
 </div></div>
@@ -120,6 +124,7 @@
           onkeydown="if(event.key==='Enter'){go(this.value);this.value='';}">
         <button class="btn sub" onclick="reset()">完了</button>
       </div>
+      <div class="hint">バーコードが無くても、ISBNの数字を直接入力すれば同じように使えます</div>
       <div id="state" class="state">利用者カードの読み取り待ちです</div>
       <div id="res" class="res" aria-live="polite"></div>
       <ul id="log" class="log"></ul>
@@ -128,69 +133,92 @@
       <h3>読み取りのかわりに押してください</h3>
       <div style="font-size:12px;color:var(--ink2);margin-bottom:6px">利用者カード</div>
       <div id="users"></div>
-      <div style="font-size:12px;color:var(--ink2);margin:12px 0 6px">本（裏表紙のバーコード）</div>
+      <div style="font-size:12px;color:var(--ink2);margin:12px 0 6px">本</div>
       <div id="books" class="list"></div>
     </div>
   </div>
 
   <div class="tbl">
     <div class="h">いま貸出中の本</div>
-    <table aria-label="貸出中一覧"><thead><tr><th>書名</th><th>借りている人</th><th>返却期限</th><th>状態</th></tr></thead><tbody id="loans"></tbody></table>
+    <table aria-label="貸出中一覧"><thead><tr><th>書名</th><th>どの1冊か</th><th>借りている人</th><th>返却期限</th></tr></thead><tbody id="loans"></tbody></table>
   </div>
 </main>
 <footer>株式会社ブックスタンド　提案デモ</footer>
 
 <script>
-var MUJIN=false, TRACE=false, activeUser=null;
+var MUJIN=false, TRACE=false, activeUser=null, seq=1;
 var users={U001:{name:'山田 花子'},U002:{name:'田中 一郎'},U003:{name:'佐藤 美咲'}};
+
 var titles={
  '9784334915414':'リラの花咲くけものみち',
+ '9784101092058':'はらぺこあおむし',
  '9784101010014':'吾輩は猫である',
- '9784101092058':'はらぺこあおむし'
+ '9784900000001':'ふるさとのむかし話',
+ 'L0001':'郷土のあゆみ'
 };
-var copies={'9784334915414':1,'9784101010014':1,'9784101092058':5};
-var loans=[];
-var seq=1;
+// どの1冊か＝番号と配架場所
+var copies={
+ '9784334915414':[{n:1,place:'1階開架'}],
+ '9784101092058':[{n:1,place:'1階開架'},{n:2,place:'1階開架'},{n:3,place:'1階開架'},{n:4,place:'1階開架'},{n:5,place:'1階開架'}],
+ '9784101010014':[{n:1,place:'1階開架'}],
+ '9784900000001':[{n:1,place:'1階開架'},{n:2,place:'3階閉架'}],
+ 'L0001':[{n:1,place:'3階閉架'}]
+};
+var nobc={'9784900000001':'ISBNの数字のみ（バーコードなし）','L0001':'ISBNなし・個人出版　資料番号 L0001'};
+var loans=[], boxed=[];
 
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e}
 function today(){return new Date()}
 function fmt(d){return (d.getMonth()+1)+'月'+d.getDate()+'日'}
 function dstr(s){var p=s.split('-');return Number(p[1])+'月'+Number(p[2])+'日'}
+function nCopies(i){return copies[i].length}
+function label(isbn,n){
+  var c=copies[isbn].filter(function(x){return x.n===n})[0];
+  if(!c)return '○'+n;
+  var places={}; copies[isbn].forEach(function(x){places[x.place]=1});
+  return Object.keys(places).length>1 ? '○'+n+'　'+c.place : '○'+n;
+}
 
 function setMode(m){
-  MUJIN = (m==='mujin');
-  document.getElementById('m-yujin').className = MUJIN?'':'on';
-  document.getElementById('m-mujin').className = MUJIN?'on':'';
-  reset(); render();
+  MUJIN=(m==='mujin');
+  document.getElementById('m-yujin').className=MUJIN?'':'on';
+  document.getElementById('m-mujin').className=MUJIN?'on':'';
+  boxed=[]; reset(); render();
 }
 function setTrace(v){
   TRACE=v;
-  document.getElementById('t-nashi').className = v?'':'on';
-  document.getElementById('t-ari').className = v?'on':'';
-  reset(); render();
+  document.getElementById('t-nashi').className=v?'':'on';
+  document.getElementById('t-ari').className=v?'on':'';
+  boxed=[]; reset(); render();
 }
 
 function capText(){
   var c=document.getElementById('cap');c.innerHTML='';
   var t,b;
-  if(!MUJIN && !TRACE){t='A　職員が受け取る／特定しない';b='本には何も貼らず、何も書きません。すぐに始められ、日々の操作もいちばん少なくて済みます。ただし同じ本が複数ある場合は「5冊のうち1冊が返ってきた」という扱いになり、いま図書カードでできている「前に誰が借りたか」は分からなくなります。'}
-  if(!MUJIN && TRACE){t='B　職員が受け取る／特定する';b='いま図書カードでできていることを、そのまま続ける形です。複数ある本の背表紙に①②と書いておき、貸出のときも返却のときも番号を選びます。前に誰が借りたかを後から調べられます。書き込むのは複数ある本だけで、1冊しかない本はそのままです。'}
-  if(MUJIN && !TRACE){t='C　返却ボックス／特定しない';b='利用者が自分でバーコードを読ませて投入します。職員が受付に立たなくてよくなり、開館時間に縛られず返却できます。ただし本の傷みをその場で確認できません。'}
-  if(MUJIN && TRACE){t='D　返却ボックス／特定する';b='利用者が自分で読ませ、複数ある本は背表紙の番号を選んで投入します。省力化と追跡の両立をねらう形ですが、利用者にお願いする操作が一番多くなります。'}
-  var h=el('b',null,t);c.appendChild(h);c.appendChild(document.createTextNode(b));
+  if(!MUJIN&&!TRACE){t='A　職員が受け取る／特定しない';b='本には何も書きません。すぐに始められ、日々の操作もいちばん少なくて済みます。ただし同じ本が複数ある場合は「5冊のうち1冊が返ってきた」という扱いになり、いま図書カードでできている「どの1冊を誰が借りたか」は分からなくなります。'}
+  if(!MUJIN&&TRACE){t='B　職員が受け取る／特定する';b='いま図書カードでできていることを、そのまま続ける形です。複数ある本の背表紙に番号を書いておき、貸出と返却のときに選びます。1階と3階に分かれて置いてある本も、どちらの1冊かが分かります。'}
+  if(MUJIN&&!TRACE){t='C　返却ボックス／特定しない';b='利用者は返却ボックスに入れるだけ。読み取りはあとで職員がまとめて行います。利用者に操作をお願いしないので、いちばん簡単です。棚に戻すときに読み取るので、手間も増えません。'}
+  if(MUJIN&&TRACE){t='D　返却ボックス／特定する';b='利用者は返却ボックスに入れるだけ。あとで職員がまとめて読み取り、そのときにどの1冊かを選びます。利用者の手間を増やさずに、どの1冊を誰が借りたかを残せます。'}
+  c.appendChild(el('b',null,t));c.appendChild(document.createTextNode(b));
 }
 
 function render(){
   capText();
-  document.getElementById('ttl').textContent = MUJIN?'返却ボックス／受付　':'受付カウンター　';
-  document.getElementById('who').textContent = MUJIN?'利用者が操作':'職員が操作';
+  document.getElementById('ttl').textContent=MUJIN?'受付カウンター／返却ボックス':'受付カウンター';
+  document.getElementById('who').textContent='職員が操作';
   var ba=document.getElementById('boxarea');ba.innerHTML='';
   if(MUJIN){
     var b=el('div','box');
-    b.appendChild(el('div',null,'返却ボックス'));
-    b.appendChild(el('div',null,'本のバーコードを読ませてから、投入口へ入れてください'));
-    b.style.marginBottom='12px';
+    b.appendChild(el('div',null,'返却ボックスの中'));
+    b.appendChild(el('span','cnt',boxed.length+' 冊'));
+    b.appendChild(el('div',null,'利用者は入れるだけ。読み取りは職員がまとめて行います'));
     ba.appendChild(b);
+    var btn=el('button','btn wide','職員がまとめて読み取る');
+    btn.disabled=!boxed.length;
+    btn.addEventListener('click',bulkReturn);
+    ba.appendChild(btn);
+    ba.appendChild(el('div','hint','貸出はカウンターで行います（下の読み取り欄）'));
+    var sp=el('div');sp.style.height='14px';ba.appendChild(sp);
   }
   renderCards(); renderLoans();
 }
@@ -198,35 +226,28 @@ function render(){
 function reset(){
   activeUser=null;
   var s=document.getElementById('state');s.className='state';
-  s.textContent = MUJIN ? '本のバーコードを読ませてください' : '利用者カードの読み取り待ちです';
+  s.textContent='利用者カードの読み取り待ちです';
   document.getElementById('res').className='res';
 }
-
 function log(m){
   var ul=document.getElementById('log'),li=el('li'),d=today();
   li.textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')+'　'+m;
   ul.insertBefore(li,ul.firstChild);
-  while(ul.children.length>5)ul.removeChild(ul.lastChild);
+  while(ul.children.length>6)ul.removeChild(ul.lastChild);
 }
 function show(k,n){var r=document.getElementById('res');r.className='res show '+k;r.innerHTML='';r.appendChild(n)}
 
 function go(code){
   code=(code||'').trim().toUpperCase();if(!code)return;
   if(users[code]){
-    if(MUJIN){
-      var w=el('div');w.appendChild(el('div','big','返却ボックスではカードは使いません'));
-      w.appendChild(el('div',null,'本のバーコードだけ読ませてください。'));
-      show('info',w);return;
-    }
     activeUser=code;
     var s=document.getElementById('state');s.className='state on';
     s.textContent='貸出モード：'+users[code].name+' さん（続けて本を読み取ってください）';
     var d=el('div');d.appendChild(el('div','big',users[code].name+' さんのカードを確認しました'));
     d.appendChild(el('div',null,'このまま本を読むと貸出になります。'));
-    show('info',d);log(users[code].name+' さんのカードを読み取り');
-    render();return;
+    show('info',d);log(users[code].name+' さんのカードを読み取り');render();return;
   }
-  if(titles[code]){ handleBook(code); render(); return; }
+  if(titles[code]){handleBook(code);render();return}
   var w=el('div');w.appendChild(el('div','big','読み取れませんでした'));
   w.appendChild(el('div',null,'右のボタンをお使いください。'));
   show('warn',w);
@@ -234,131 +255,157 @@ function go(code){
 
 function handleBook(isbn){
   var out=loans.filter(function(l){return l.isbn===isbn});
-  if(MUJIN){
-    if(!out.length){
-      var d=el('div');d.appendChild(el('div','big','この本は貸出中ではありません'));
-      d.appendChild(el('div',null,'カウンターへお持ちください。'));
-      show('warn',d);return;
-    }
-    doReturn(isbn,out);return;
+  if(out.length && !activeUser){
+    if(MUJIN){ putInBox(isbn,out); } else { askReturn(isbn,out); }
+    return;
   }
-  if(out.length && !activeUser){ doReturn(isbn,out); return; }
   if(!activeUser){
-    var d2=el('div');d2.appendChild(el('div','big','「'+titles[isbn]+'」は在架です'));
-    d2.appendChild(el('div',null,'貸出するには先に利用者カードを読み取ってください。'));
-    show('info',d2);return;
+    var d=el('div');d.appendChild(el('div','big','「'+titles[isbn]+'」は在架です'));
+    d.appendChild(el('div',null,'貸出するには先に利用者カードを読み取ってください。'));
+    show('info',d);return;
   }
-  if(out.length>=copies[isbn]){
-    var d3=el('div');d3.appendChild(el('div','big','貸出できません'));
-    d3.appendChild(el('div',null,'「'+titles[isbn]+'」は'+copies[isbn]+'冊すべて貸出中です。'));
-    show('warn',d3);return;
+  if(out.length>=nCopies(isbn)){
+    var d2=el('div');d2.appendChild(el('div','big','貸出できません'));
+    d2.appendChild(el('div',null,'「'+titles[isbn]+'」は'+nCopies(isbn)+'冊すべて貸出中です。'));
+    show('warn',d2);return;
   }
   doLend(isbn);
 }
 
 function doLend(isbn){
-  var n=copies[isbn];
+  var n=nCopies(isbn);
   if(TRACE && n>1){
-    var used=loans.filter(function(l){return l.isbn===isbn}).map(function(l){return l.eda});
+    var used=loans.filter(function(l){return l.isbn===isbn}).map(function(l){return l.n});
     var d=el('div');
     d.appendChild(el('div','big','「'+titles[isbn]+'」は '+n+'冊あります'));
     d.appendChild(el('div',null,'お持ちの本の背表紙に書かれた番号を選んでください。'));
     var c=el('div','choice');
-    for(var i=1;i<=n;i++){
-      (function(k){
-        var b=el('button',null,'○'+k);
-        if(used.indexOf(k)>=0){
-          b.appendChild(el('span',null,'貸出中'));
-          b.style.opacity='.4';b.style.cursor='not-allowed';
-        }else{
-          b.appendChild(el('span',null,'在架'));
-          b.addEventListener('click',function(){finishLend(isbn,k);render()});
-        }
-        c.appendChild(b);
-      })(i);
-    }
+    copies[isbn].forEach(function(cp){
+      var b=el('button',null,label(isbn,cp.n));
+      if(used.indexOf(cp.n)>=0){
+        b.appendChild(el('span',null,'貸出中'));b.style.opacity='.4';b.style.cursor='not-allowed';
+      }else{
+        b.appendChild(el('span',null,'在架'));
+        b.addEventListener('click',function(){finishLend(isbn,cp.n);render()});
+      }
+      c.appendChild(b);
+    });
     d.appendChild(c);show('info',d);return;
   }
   finishLend(isbn,null);
 }
 
-function finishLend(isbn,eda){
+function finishLend(isbn,n){
   var due=new Date();due.setDate(due.getDate()+14);
-  loans.push({id:seq++,isbn:isbn,user:activeUser,due:due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0'),eda:eda});
-  var d=el('div');
-  d.appendChild(el('div','big','貸出しました：「'+titles[isbn]+'」'+(eda?'　○'+eda:'')));
+  loans.push({id:seq++,isbn:isbn,user:activeUser,n:n,
+    due:due.getFullYear()+'-'+String(due.getMonth()+1).padStart(2,'0')+'-'+String(due.getDate()).padStart(2,'0')});
   var u=users[activeUser].name;
+  var d=el('div');
+  d.appendChild(el('div','big','貸出しました：「'+titles[isbn]+'」'+(n?'　'+label(isbn,n):'')));
   d.appendChild(el('div',null,u+' さん ／ 返却期限 '+fmt(due)));
   show('ok',d);
-  log('「'+titles[isbn]+'」を '+u+' さんに貸出'+(eda?'（○'+eda+'）':''));
+  log('「'+titles[isbn]+'」を '+u+' さんに貸出'+(n?'（'+label(isbn,n)+'）':''));
 }
 
-function doReturn(isbn,out){
-  if(TRACE && copies[isbn]>1 && out.length>1){
+function putInBox(isbn,out){
+  boxed.push(isbn);
+  var d=el('div');
+  d.appendChild(el('div','big','返却ボックスに入れました：「'+titles[isbn]+'」'));
+  var ul=el('ul');
+  ul.appendChild(el('li',null,'利用者の操作はここまでです'));
+  ul.appendChild(el('li',null,'職員が棚に戻すときに読み取って、返却が完了します'));
+  d.appendChild(ul);show('ok',d);
+  log('返却ボックスに投入：「'+titles[isbn]+'」');
+}
+
+function bulkReturn(){
+  if(!boxed.length)return;
+  var isbn=boxed[0];
+  var out=loans.filter(function(l){return l.isbn===isbn});
+  if(!out.length){ boxed.shift(); render(); bulkReturn(); return; }
+  if(TRACE && out.length>1){
     var d=el('div');
-    d.appendChild(el('div','big','「'+titles[isbn]+'」の返却'));
-    d.appendChild(el('div',null,'本の背表紙に書かれた番号を選んでください。'));
+    d.appendChild(el('div','big','「'+titles[isbn]+'」を読み取りました'));
+    d.appendChild(el('div',null,'本の背表紙に書かれた番号を選んでください。（残り '+boxed.length+'冊）'));
     var c=el('div','choice');
     out.forEach(function(l){
-      var b=el('button',null,'○'+l.eda);
-      var sp=el('span',null,users[l.user].name+' さん');
-      b.appendChild(sp);
-      b.addEventListener('click',function(){finish(l);render()});
+      var b=el('button',null,label(isbn,l.n));
+      b.appendChild(el('span',null,users[l.user].name+' さん'));
+      b.addEventListener('click',function(){
+        finishReturn(l);boxed.shift();render();
+        if(boxed.length)setTimeout(bulkReturn,400);
+      });
       c.appendChild(b);
     });
     d.appendChild(c);show('info',d);return;
   }
   out.sort(function(a,b){return a.due<b.due?-1:1});
-  finish(out[0]);
+  finishReturn(out[0]);boxed.shift();render();
+  if(boxed.length)setTimeout(bulkReturn,400);
 }
 
-function finish(l){
+function askReturn(isbn,out){
+  if(TRACE && out.length>1){
+    var d=el('div');
+    d.appendChild(el('div','big','「'+titles[isbn]+'」の返却'));
+    d.appendChild(el('div',null,'本の背表紙に書かれた番号を選んでください。'));
+    var c=el('div','choice');
+    out.forEach(function(l){
+      var b=el('button',null,label(isbn,l.n));
+      b.appendChild(el('span',null,users[l.user].name+' さん'));
+      b.addEventListener('click',function(){finishReturn(l);render()});
+      c.appendChild(b);
+    });
+    d.appendChild(c);show('info',d);return;
+  }
+  out.sort(function(a,b){return a.due<b.due?-1:1});
+  finishReturn(out[0]);
+}
+
+function finishReturn(l){
   loans=loans.filter(function(x){return x.id!==l.id});
   var d=el('div');
-  d.appendChild(el('div','big','返却を受け付けました：「'+titles[l.isbn]+'」'));
+  d.appendChild(el('div','big','返却しました：「'+titles[l.isbn]+'」'+(l.n?'　'+label(l.isbn,l.n):'')));
   var ul=el('ul');
-  if(TRACE && l.eda){
-    ul.appendChild(el('li',null,'○'+l.eda+' の本　／　'+users[l.user].name+' さんの貸出を完了しました'));
-    ul.appendChild(el('li',null,'この本を誰が借りたかは記録に残ります'));
-  }else if(copies[l.isbn]>1){
-    ul.appendChild(el('li',null,copies[l.isbn]+'冊のうち1冊が返ってきた、として処理しました'));
-    ul.appendChild(el('li',null,'どの1冊かは特定していません'));
+  if(TRACE && l.n){
+    ul.appendChild(el('li',null,users[l.user].name+' さんの貸出を完了しました'));
+    var cp=copies[l.isbn].filter(function(x){return x.n===l.n})[0];
+    if(cp)ul.appendChild(el('li',null,'棚に戻す場所：'+cp.place));
+  }else if(nCopies(l.isbn)>1){
+    ul.appendChild(el('li',null,nCopies(l.isbn)+'冊のうち1冊が返ってきた、として処理しました'));
   }else{
     ul.appendChild(el('li',null,users[l.user].name+' さんの貸出を完了しました'));
   }
-  if(MUJIN){ul.appendChild(el('li',null,'本の傷みは、その場では確認していません'))}
   d.appendChild(ul);show('ok',d);
-  log('「'+titles[l.isbn]+'」返却'+(l.eda?'（○'+l.eda+'）':''));
+  log('「'+titles[l.isbn]+'」返却'+(l.n?'（'+label(l.isbn,l.n)+'）':''));
 }
 
 function renderCards(){
   var uc=document.getElementById('users');uc.innerHTML='';
-  if(MUJIN){
-    var p=el('div');p.style.fontSize='13px';p.style.color='var(--ink2)';
-    p.textContent='返却ボックスでは使いません';uc.appendChild(p);
-  }else{
-    Object.keys(users).forEach(function(c){
-      var row=el('div','card'),L=el('div');
-      L.appendChild(el('div','nm',users[c].name));L.appendChild(el('div','cd',c));
-      row.appendChild(L);
-      var R=el('div');R.style.display='flex';R.style.alignItems='center';R.style.gap='10px';
-      R.appendChild(el('div','bc'));
-      var b=el('button','btn sub mini','ピッ');b.addEventListener('click',function(){go(c)});
-      R.appendChild(b);row.appendChild(R);uc.appendChild(row);
-    });
-  }
-  var bc=document.getElementById('books');bc.innerHTML='';
-  Object.keys(titles).forEach(function(isbn){
-    var n=copies[isbn], out=loans.filter(function(l){return l.isbn===isbn}).length;
+  Object.keys(users).forEach(function(c){
     var row=el('div','card'),L=el('div');
-    var nm=el('div','nm',titles[isbn]);
-    if(n>1){nm.appendChild(document.createTextNode(' '));nm.appendChild(el('span','tag',n+'冊'))}
-    L.appendChild(nm);
-    L.appendChild(el('div','cd',isbn+(n>1?'　貸出中 '+out+'／'+n:(out?'　貸出中':'　在架'))));
+    L.appendChild(el('div','nm',users[c].name));L.appendChild(el('div','cd',c));
     row.appendChild(L);
     var R=el('div');R.style.display='flex';R.style.alignItems='center';R.style.gap='10px';
     R.appendChild(el('div','bc'));
-    var b=el('button','btn sub mini','ピッ');b.addEventListener('click',function(){go(isbn)});
+    var b=el('button','btn sub mini','ピッ');b.addEventListener('click',function(){go(c)});
+    R.appendChild(b);row.appendChild(R);uc.appendChild(row);
+  });
+  var bc=document.getElementById('books');bc.innerHTML='';
+  Object.keys(titles).forEach(function(isbn){
+    var n=nCopies(isbn), out=loans.filter(function(l){return l.isbn===isbn}).length;
+    var row=el('div','card'),L=el('div');
+    var nm=el('div','nm',titles[isbn]);
+    if(n>1){nm.appendChild(document.createTextNode(' '));nm.appendChild(el('span','tag',n+'冊'))}
+    if(nobc[isbn]){nm.appendChild(document.createTextNode(' '));nm.appendChild(el('span','tag b','バーコードなし'))}
+    L.appendChild(nm);
+    var sub=nobc[isbn]?nobc[isbn]:isbn;
+    L.appendChild(el('div','cd',sub+(n>1?'　貸出中 '+out+'／'+n:(out?'　貸出中':'　在架'))));
+    row.appendChild(L);
+    var R=el('div');R.style.display='flex';R.style.alignItems='center';R.style.gap='10px';
+    R.appendChild(nobc[isbn]?el('div','nobc','手入力'):el('div','bc'));
+    var b=el('button','btn sub mini',(MUJIN&&out)?'返却箱へ':'ピッ');
+    b.addEventListener('click',function(){go(isbn)});
     R.appendChild(b);row.appendChild(R);bc.appendChild(row);
   });
 }
@@ -370,10 +417,13 @@ function renderLoans(){
   }
   loans.forEach(function(l){
     var tr=el('tr');
-    tr.appendChild(el('td',null,titles[l.isbn]+(l.eda?'　○'+l.eda:'')));
+    tr.appendChild(el('td',null,titles[l.isbn]));
+    var c2=el('td');
+    if(l.n)c2.appendChild(el('span','pill z',label(l.isbn,l.n)));
+    else c2.appendChild(el('span','pill w','特定していない'));
+    tr.appendChild(c2);
     tr.appendChild(el('td',null,users[l.user].name+' さん'));
     tr.appendChild(el('td',null,dstr(l.due)));
-    var t=el('td');t.appendChild(el('span','pill z','期限内'));tr.appendChild(t);
     tb.appendChild(tr);
   });
 }
